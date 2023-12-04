@@ -1,4 +1,4 @@
-import { PuzzleInputReader } from '../utils/PuzzleInputReader';
+import { PuzzleInputReader } from '../utils/puzzle-input-reader';
 
 export class Trebuchet {
   readonly substitutes: Map<string, string> = new Map<string, string>([
@@ -14,7 +14,7 @@ export class Trebuchet {
   ]);
 
   solve(): any {
-    PuzzleInputReader.getPuzzleInput('./puzzleInput.txt').then(data => {
+    PuzzleInputReader.getPuzzleInput('./puzzle-input.txt').then(data => {
       console.log('part 1:', this.partOne(data));
       console.log('part 2:', this.partTwo(data));
     });

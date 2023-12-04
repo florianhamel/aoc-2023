@@ -1,4 +1,4 @@
-import { PuzzleInputReader } from '../utils/PuzzleInputReader';
+import { PuzzleInputReader } from '../utils/puzzle-input-reader';
 
 interface ICube {
   quantity: number;
@@ -84,7 +84,7 @@ export class Cube {
   }
 
   solve(): void {
-    PuzzleInputReader.getPuzzleInput('./puzzleInput.txt').then(data => {
+    PuzzleInputReader.getPuzzleInput('./puzzle-input.txt').then(data => {
       console.log(this.partOne(data));
       console.log(this.partTwo(data));
     });
