@@ -14,7 +14,7 @@ export class Trebuchet {
   ]);
 
   solve(): any {
-    PuzzleInputReader.getPuzzleInput('./puzzle-input.txt').then(data => {
+    PuzzleInputReader.getPuzzleInput('./puzzle-input.txt.txt').then(data => {
       console.log('part 1:', this.partOne(data));
       console.log('part 2:', this.partTwo(data));
     });

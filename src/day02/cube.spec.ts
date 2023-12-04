@@ -1,7 +1,7 @@
 import { describe } from '@jest/globals';
 import { Cube } from './cube';
 
-describe('part 1', () => {
+describe('cube', () => {
   const cube: Cube = new Cube();
   const data: string = 'Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green\n' +
     'Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue\n' +

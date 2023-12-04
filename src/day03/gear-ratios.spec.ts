@@ -1,6 +1,6 @@
 import { GearRatios } from './gear-ratios';
 
-describe('part one', () => {
+describe('gear ratios', () => {
   const data: string =
     '467..114..\n' +
     '...*......\n' +

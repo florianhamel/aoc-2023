@@ -121,7 +121,7 @@ export class GearRatios {
   }
 }
 
-PuzzleInputReader.getPuzzleInput('./puzzle-input.txt').then(data => {
+PuzzleInputReader.getPuzzleInput('./puzzle-input.txt.txt').then(data => {
   const gearRatios: GearRatios = new GearRatios(data);
   console.log(gearRatios.partOne());
   console.log(gearRatios.partTwo());

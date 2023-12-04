@@ -84,7 +84,7 @@ export class Cube {
   }
 
   solve(): void {
-    PuzzleInputReader.getPuzzleInput('./puzzle-input.txt').then(data => {
+    PuzzleInputReader.getPuzzleInput('./puzzle-input.txt.txt').then(data => {
       console.log(this.partOne(data));
       console.log(this.partTwo(data));
     });
