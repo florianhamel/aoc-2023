@@ -1,5 +1,7 @@
 import * as fs from 'fs';
 
+export const PUZZLE_INPUT = './puzzle-input.txt';
+
 export class PuzzleInputReader {
   static async getPuzzleInput(filePath: string): Promise<string> {
     try {

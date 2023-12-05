@@ -26,14 +26,14 @@ export class Scratchcards {
 
   private processScratchcards(lines: string[]): number {
     let sum: number = lines.length;
-    for (let line of lines) {
+    lines.forEach(line => {
       const id: number = this.getId(line);
       const winningNumbers: string[] = this.getNumbers(line, this.winning);
       const scratchedNumbers: string[] = this.getNumbers(line, this.scratched);
       const intersection: string[] = scratchedNumbers.filter(nbr => winningNumbers.includes(nbr));
       const copiedScratchcards: string[] = this.getCopiedLines(intersection.length, id);
       sum += this.processScratchcards(copiedScratchcards);
-    }
+    });
     return sum;
   }
 
