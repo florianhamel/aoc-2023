@@ -68,7 +68,7 @@ export class Seed {
     for (let i = 0; i < seeds.length; i += 2) {
       intervals.push({
         start: seeds.at(i)!,
-        end: seeds.at(i + 1)!
+        end: seeds.at(i)! + seeds.at(i + 1)!
       });
     }
     return intervals;
