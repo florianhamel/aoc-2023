@@ -38,7 +38,7 @@ describe('seed', () => {
 
   const seed: Seed = new Seed(data);
 
-  it('', () => {
+  it('should get the lowest location number amongst seeds', () => {
     // GIVEN
 
     // WHEN
@@ -48,13 +48,13 @@ describe('seed', () => {
     expect(output).toBe(35);
   });
 
-  // it('', () => {
-  //   // GIVEN
-  //
-  //   // WHEN
-  //   const output: number = seed.partTwo();
-  //
-  //   // THEN
-  //   expect(output).toBe();
-  // });
+  it('should get the lowest location number amongst seed ranges', () => {
+    // GIVEN
+
+    // WHEN
+    const output: number = seed.partTwo();
+
+    // THEN
+    expect(output).toBe(46);
+  });
 });

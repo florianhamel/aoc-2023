@@ -6,6 +6,11 @@ interface IMapper {
   range: number;
 }
 
+interface IInterval {
+  start: number;
+  end: number;
+}
+
 export class Seed {
   readonly blocks: string[];
 
@@ -14,13 +19,19 @@ export class Seed {
   }
 
   partOne(): number {
-    const seeds: number[] = this.getSeeds();
     const maps: Map<string, IMapper[]> = this.getMaps();
+    const seeds: number[] = this.getSeedLineNumbers();
     const locations: number[] = this.getLocations(seeds, maps);
     return Math.min(...locations);
   }
 
-  private getSeeds(): number[] {
+  partTwo(): number {
+    const maps: Map<string, IMapper[]> = this.getMaps();
+    const intervals: IInterval[] = this.getIntervals();
+    return this.getFirstMatchingLocation(intervals, maps);
+  }
+
+  private getSeedLineNumbers(): number[] {
     return this.blocks.at(0)!.split(':').at(1)!.trim().split(' ')
       .map(seed => parseInt(seed));
   }
@@ -51,9 +62,51 @@ export class Seed {
     };
   }
 
+  private getIntervals(): IInterval[] {
+    const seeds: number[] = this.getSeedLineNumbers();
+    const intervals: IInterval[] = [];
+    for (let i = 0; i < seeds.length; i += 2) {
+      intervals.push({
+        start: seeds.at(i)!,
+        end: seeds.at(i + 1)!
+      });
+    }
+    return intervals;
+  }
+
+  private getFirstMatchingLocation(intervals: IInterval[], maps: Map<string, IMapper[]>): number {
+    for (let location = 0; true; ++location) {
+      const seed: number = this.getSeed(location, maps);
+      if (this.isActualSeed(seed, intervals)) {
+        return location;
+      }
+    }
+  }
+
+  private getSeed(location: number, maps: Map<string, IMapper[]>): number {
+    return [...maps.values()].reduceRight((input, mappers) => this.reverseMap(input, mappers), location);
+  }
+
+  private reverseMap(input: number, mappers: IMapper[]): number {
+    for (let mapper of mappers) {
+      if ((mapper.dst <= input) && (input < mapper.dst + mapper.range)) {
+        return mapper.src + (input - mapper.dst);
+      }
+    }
+    return input;
+  }
+
+  private isActualSeed(seed: number, intervals: IInterval[]): boolean {
+    return intervals.some(interval => (interval.start <= seed && seed < interval.end));
+  }
+
+  // Part 1
   private getLocations(seeds: number[], maps: Map<string, IMapper[]>): number[] {
-    return seeds.map(seed => [...maps.values()]
-      .reduce((input, mappers) => this.map(input, mappers), seed));
+    return seeds.map(seed => this.getLocation(seed, maps));
+  }
+
+  private getLocation(seed: number, maps: Map<string, IMapper[]>): number {
+    return [...maps.values()].reduce((input, mappers) => this.map(input, mappers), seed);
   }
 
   private map(input: number, mappers: IMapper[]): number {
@@ -69,4 +122,5 @@ export class Seed {
 PuzzleInputReader.getPuzzleInput(PUZZLE_INPUT).then(data => {
   const seed: Seed = new Seed(data);
   console.log(seed.partOne());
+  console.log(seed.partTwo());
 });
