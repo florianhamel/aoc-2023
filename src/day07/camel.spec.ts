@@ -1,4 +1,4 @@
-import { Camel } from './camel';
+import { Camel, CamelJoker } from './camel';
 
 describe('camel', () => {
   const data: string =
@@ -8,23 +8,26 @@ describe('camel', () => {
     'KTJJT 220\n' +
     'QQQJA 483';
 
-  const camel: Camel = new Camel(data);
 
   it('should sum the bids multiplied by their rank', () => {
     // GIVEN
+    const camel: Camel = new Camel(data);
+
     // WHEN
-    const output: number = camel.partOne();
+    const output: number = camel.solve();
 
     // THEN
     expect(output).toBe(6440);
   });
 
-  // it('', () => {
-  //   // GIVEN
-  //   // WHEN
-  //   const output: number = camel.partTwo();
-  //
-  //   // THEN
-  //   expect(output).toBe();
-  // });
+  it('should sum the bids multiplied by their rank but J is Joker', () => {
+    // GIVEN
+    const camelJoker: CamelJoker = new CamelJoker(data);
+
+    // WHEN
+    const output: number = camelJoker.solve();
+
+    // THEN
+    expect(output).toBe(5905);
+  });
 });

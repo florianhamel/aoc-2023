@@ -15,25 +15,22 @@ enum HandType {
   FIVE_KIND
 }
 
-export class Camel {
+abstract class AbstractCamel {
   readonly lines: string[];
 
-  readonly cardsValue: Map<string, number> = new Map([
-    ['A', 14], ['K', 13], ['Q', 12], ['J', 11], ['T', 10],
-    ['9', 9], ['8', 8], ['7', 7], ['6', 6], ['5', 5], ['4', 4], ['3', 3], ['2', 2]
-  ]);
+  abstract cardsValue: Map<string, number>;
 
-  constructor(data: string) {
+  protected constructor(data: string) {
     this.lines = data.split('\n');
   }
 
-  partOne(): number {
+  solve(): number {
     const hands: IHand[] = this.getHands();
     return this.getSortedHands(hands).reduce((sum, hand, rank) =>
       sum + (hand.bid * (rank + 1)), 0);
   }
-
-  private getHands(): IHand[] {
+  
+  protected getHands(): IHand[] {
     const hands: IHand[] = [];
     this.lines.forEach(line => {
       hands.push(this.getHand(line));
@@ -41,7 +38,7 @@ export class Camel {
     return hands;
   }
 
-  private getHand(line: string): IHand {
+  protected getHand(line: string): IHand {
     const splitLine: string[] = line.split(' ');
     return {
       cards: splitLine.at(0)!,
@@ -49,43 +46,29 @@ export class Camel {
     };
   }
 
-  private getSortedHands(hands: IHand[]): IHand[] {
-    return hands.sort((first, second) => this.compareHands(first, second));
+  protected getSortedHands(hands: IHand[]): IHand[] {
+    return hands.sort((first, second) =>
+      this.compareHands(first.cards, second.cards));
   }
 
-  private compareHands(first: IHand, second: IHand): number {
-    const typeFirst: HandType = this.getHandType(first);
-    const typeSecond: HandType = this.getHandType(second);
-    return (typeFirst === typeSecond) ? this.compareCards(first.cards, second.cards) : typeFirst - typeSecond;
-  }
+  protected abstract compareHands(first: string, second: string): number;
 
-  private compareCards(first: string, second: string): number {
-    for (let i = 0; i < 5; ++i) {
-      const cardFirst: string = first.at(i)!;
-      const cardSecond: string = second.at(i)!;
-      if (cardFirst !== cardSecond) {
-        return this.cardsValue.get(cardFirst)! - this.cardsValue.get(cardSecond)!;
-      }
-    }
-    return 0;
-  }
-
-  private getHandType(hand: IHand): HandType {
-    const cardsMap: Map<string, number> = this.getCardsMap(hand.cards);
+  protected getHandType(cards: string): HandType {
+    const cardsMap: Map<string, number> = this.getCardsMap(cards);
     const values: number[] = [...cardsMap.values()];
-    if (values.length === 1) {
-      return HandType.FIVE_KIND;
-    } else if (values.length === 2) {
-      return values.includes(4) ? HandType.FOUR_KIND : HandType.FULL_HOUSE;
-    } else if (values.length === 3) {
-      return values.includes(3) ? HandType.THREE_KIND : HandType.TWO_PAIR;
-    } else if (values.length === 4) {
-      return HandType.ONE_PAIR;
+    switch (values.length) {
+      case 1:
+        return HandType.FIVE_KIND;
+      case 2:
+        return values.includes(4) ? HandType.FOUR_KIND : HandType.FULL_HOUSE;
+      case 3:
+        return values.includes(3) ? HandType.THREE_KIND : HandType.TWO_PAIR;
+      default:
+        return values.includes(2) ? HandType.ONE_PAIR : HandType.HIGH_CARD;
     }
-    return HandType.HIGH_CARD;
   }
 
-  private getCardsMap(cards: string): Map<string, number> {
+  protected getCardsMap(cards: string): Map<string, number> {
     const cardsMap: Map<string, number> = new Map<string, number>();
     for (let char of cards) {
       if (cardsMap.has(char)) {
@@ -96,9 +79,68 @@ export class Camel {
     }
     return cardsMap;
   }
+
+  protected compareCards(first: string, second: string): number {
+    for (let i = 0; i < 5; ++i) {
+      const cardFirst: string = first.at(i)!;
+      const cardSecond: string = second.at(i)!;
+      if (cardFirst !== cardSecond) {
+        return this.cardsValue.get(cardFirst)! - this.cardsValue.get(cardSecond)!;
+      }
+    }
+    return 0;
+  }
+}
+
+export class Camel extends AbstractCamel {
+  readonly cardsValue: Map<string, number> = new Map([
+    ['A', 14], ['K', 13], ['Q', 12], ['J', 11], ['T', 10],
+    ['9', 9], ['8', 8], ['7', 7], ['6', 6], ['5', 5], ['4', 4], ['3', 3], ['2', 2]
+  ]);
+
+  constructor(data: string) {
+    super(data);
+  }
+
+  compareHands(first: string, second: string): number {
+    const typeFirst: HandType = this.getHandType(first);
+    const typeSecond: HandType = this.getHandType(second);
+    return (typeFirst === typeSecond) ? this.compareCards(first, second) : typeFirst - typeSecond;
+  }
+}
+
+export class CamelJoker extends AbstractCamel {
+  readonly cardsValue: Map<string, number> = new Map([
+    ['A', 14], ['K', 13], ['Q', 12], ['T', 10],
+    ['9', 9], ['8', 8], ['7', 7], ['6', 6], ['5', 5], ['4', 4], ['3', 3], ['2', 2], ['J', 1]
+  ]);
+
+  constructor(data: string) {
+    super(data);
+  }
+
+  protected compareHands(first: string, second: string): number {
+    const typeFirst: HandType = this.getHandTypeWithJoker(first);
+    const typeSecond: HandType = this.getHandTypeWithJoker(second);
+    return (typeFirst === typeSecond) ? this.compareCards(first, second) : typeFirst - typeSecond;
+  }
+
+  private getHandTypeWithJoker(cards: string): HandType {
+    const cardsMap: Map<string, number> = this.getCardsMap(cards);
+    if (!cards.includes('J')) {
+      return this.getHandType(cards);
+    }
+    let best: HandType = HandType.HIGH_CARD;
+    [...cardsMap.keys()].forEach(card => {
+      best = Math.max(best, this.getHandType(cards.replace(/J/g, card)));
+    });
+    return best;
+  }
 }
 
 PuzzleInputReader.getPuzzleInput(PUZZLE_INPUT).then(data => {
   const camel: Camel = new Camel(data);
-  console.log(camel.partOne());
+  const camelJoker: CamelJoker = new CamelJoker(data);
+  console.log(camel.solve());
+  console.log(camelJoker.solve());
 });
