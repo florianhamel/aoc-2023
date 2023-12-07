@@ -1,9 +1,13 @@
-# aoc-2023
-Advent of Code 2023
+# [Advent of Code 2023](https://adventofcode.com/)
 
-day06: ⭐⭐️\
-day05: ⭐⭐️\
-day04: ⭐⭐\
-day03: ⭐⭐️\
-day02: ⭐⭐\
+
+### Progress:
+```
+day07: ⭐
+day06: ⭐⭐️
+day05: ⭐⭐️
+day04: ⭐⭐
+day03: ⭐⭐️
+day02: ⭐⭐
 day01: ⭐⭐
+```
