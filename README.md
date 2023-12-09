@@ -3,6 +3,7 @@
 
 ### Progress:
 ```
+day08: ⭐⭐
 day07: ⭐⭐
 day06: ⭐⭐️
 day05: ⭐⭐️
